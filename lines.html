@@ -63,55 +63,6 @@
         drawLine(ctx, point1, point2)
       }
 
-      function diagonal_line(ctx, leftX, upperY, rightX, lowerY) {
-        var leftToRight = Math.random() > 0.5;
-        if(leftToRight) {
-          straightLineLeftRight();
-        } else {
-          ctx.moveTo(leftX, lowerY);
-          ctx.lineTo(rightX, upperY);
-        }
-        ctx.stroke();
-      }
-
-      function alternative_diagonal_line(ctx, leftX, upperY, rightX, lowerY) {
-        var direction = Math.random();
-        if (direction > 0.875) {
-          var midHeight = (upperY + lowerY) / 2;
-          ctx.moveTo(leftX, midHeight)
-          ctx.lineTo(rightX, upperY);
-        } else if (direction > 0.75) {
-          var midHeight = (upperY + lowerY) / 2;
-          ctx.moveTo(leftX, midHeight)
-          ctx.lineTo(rightX, lowerY);
-        } else if (direction > 0.625) {
-          var midHeight = (upperY + lowerY) / 2;
-          ctx.moveTo(rightX, midHeight)
-          ctx.lineTo(leftX, upperY);
-        } else if (direction > 0.5) {
-          var midHeight = (upperY + lowerY) / 2;
-          ctx.moveTo(rightX, midHeight)
-          ctx.lineTo(leftX, lowerY);
-        } else if (direction > 0.375) {
-          var midWidth = (leftX + rightX) / 2;
-          ctx.moveTo(midWidth, upperY)
-          ctx.lineTo(leftX, lowerY);
-        } else if (direction > 0.25) {
-          var midWidth = (leftX + rightX) / 2;
-          ctx.moveTo(midWidth, upperY)
-          ctx.lineTo(rightX, lowerY);
-        } else if (direction > 0.125) {
-          var midWidth = (leftX + rightX) / 2;
-          ctx.moveTo(midWidth, lowerY)
-          ctx.lineTo(leftX, upperY);
-        } else {
-          var midWidth = (leftX + rightX) / 2;
-          ctx.moveTo(midWidth, lowerY)
-          ctx.lineTo(rightX, upperY);
-        }
-        ctx.stroke();
-      }
-
     </script>
   </head>
 
