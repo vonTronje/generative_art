@@ -1,0 +1,162 @@
+<html>
+  <head>
+    <style type="text/css">
+      #canvas {
+        border: solid;
+        width: 50%;
+        height: 50%;
+        margin: 25%;
+          background-color: white;
+      }
+      body {
+        background-color: lightgrey;
+      }
+    </style>
+    <script>
+      class Point {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+        }
+
+        add(point) {
+          return new Point(this.x + point.x, this.y + point.y);
+        }
+
+        subtract(point) {
+          return new Point(this.x - point.x, this.y - point.y);
+        }
+
+        scalarDivision(number) {
+          return new Point(this.x/number, this.y/number);
+        }
+
+        moveTo(ctx) {
+          ctx.moveTo(this.x, this.y)
+        }
+
+        lineTo(ctx) {
+          ctx.lineTo(this.x, this.y)
+        }
+
+        rotate(degree, center) {
+          let radians = this.degreeToRadians(degree);
+          let centered = this.subtract(center);
+          let result = new Point(
+            centered.x *  Math.cos(radians) - centered.y * Math.sin(radians),
+            centered.x * Math.sin(radians) + centered.y * Math.cos(radians)
+          );
+          result = result.add(center);
+          return result;
+        }
+
+        degreeToRadians(degree) {
+          return Math.PI/180 * degree;
+        }
+      }
+
+      function bodyOnLoad() {
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        tile(ctx, 16, straightLine);
+      }
+
+      function tile(ctx, tileCount, callback) {
+        let tileWidth = ctx.canvas.width / tileCount;
+        let tileHeight = ctx.canvas.height / tileCount;
+        for(let dx = 0; dx <= tileCount; dx += 1) {
+          for(let dy = 0; dy <= tileCount; dy += 1) {
+            let upperLeft = new Point(dx * tileWidth, dy * tileHeight)
+            let lowerRight = new Point((dx + 1) * tileWidth, (dy + 1) * tileHeight);
+            let rotation = randomizeDirection(27, 0);
+            callback(ctx, upperLeft, lowerRight, rotation);
+          }
+        }
+      }
+
+      function randomizeDirection(numberOfDirections, offset) {
+        let stepThreshold =  1/numberOfDirections;
+        let value = Math.random();
+        let stepsToTake = Math.floor(value/stepThreshold);
+        let stepSize = 180/numberOfDirections;
+        return stepsToTake * stepSize + offset;
+      }
+
+      function center(upperLeft, lowerRight) {
+        return upperLeft.add(lowerRight).scalarDivision(2);
+      }
+
+      function drawLine(ctx, ...points) {
+        points[0].moveTo(ctx);
+        for ( i = 1; i < points.length; i++) {
+          points[i].lineTo(ctx);
+        }
+        ctx.stroke();
+      }
+
+      function straightLine(ctx, upperLeft, lowerRight, degree = 0) {
+        let midHeight = (upperLeft.y + lowerRight.y)/2;
+        let tileCenter = center(upperLeft, lowerRight);
+        let point1 = new Point(upperLeft.x, midHeight).rotate(degree, tileCenter);
+        let point2 = new Point(lowerRight.x, midHeight).rotate(degree, tileCenter);
+
+        drawLine(ctx, point1, point2)
+      }
+
+      function diagonal_line(ctx, leftX, upperY, rightX, lowerY) {
+        var leftToRight = Math.random() > 0.5;
+        if(leftToRight) {
+          straightLineLeftRight();
+        } else {
+          ctx.moveTo(leftX, lowerY);
+          ctx.lineTo(rightX, upperY);
+        }
+        ctx.stroke();
+      }
+
+      function alternative_diagonal_line(ctx, leftX, upperY, rightX, lowerY) {
+        var direction = Math.random();
+        if (direction > 0.875) {
+          var midHeight = (upperY + lowerY) / 2;
+          ctx.moveTo(leftX, midHeight)
+          ctx.lineTo(rightX, upperY);
+        } else if (direction > 0.75) {
+          var midHeight = (upperY + lowerY) / 2;
+          ctx.moveTo(leftX, midHeight)
+          ctx.lineTo(rightX, lowerY);
+        } else if (direction > 0.625) {
+          var midHeight = (upperY + lowerY) / 2;
+          ctx.moveTo(rightX, midHeight)
+          ctx.lineTo(leftX, upperY);
+        } else if (direction > 0.5) {
+          var midHeight = (upperY + lowerY) / 2;
+          ctx.moveTo(rightX, midHeight)
+          ctx.lineTo(leftX, lowerY);
+        } else if (direction > 0.375) {
+          var midWidth = (leftX + rightX) / 2;
+          ctx.moveTo(midWidth, upperY)
+          ctx.lineTo(leftX, lowerY);
+        } else if (direction > 0.25) {
+          var midWidth = (leftX + rightX) / 2;
+          ctx.moveTo(midWidth, upperY)
+          ctx.lineTo(rightX, lowerY);
+        } else if (direction > 0.125) {
+          var midWidth = (leftX + rightX) / 2;
+          ctx.moveTo(midWidth, lowerY)
+          ctx.lineTo(leftX, upperY);
+        } else {
+          var midWidth = (leftX + rightX) / 2;
+          ctx.moveTo(midWidth, lowerY)
+          ctx.lineTo(rightX, upperY);
+        }
+        ctx.stroke();
+      }
+
+    </script>
+  </head>
+
+  <body onload="bodyOnLoad();">
+    <canvas id="canvas" height="1000" width="1000"></canvas>
+  </body>
+
+</html>
