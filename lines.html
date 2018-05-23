@@ -16,19 +16,24 @@
     <script>
 
       function bodyOnLoad() {
+        let directionOffset = 45;
+        let numberOfDirections = 2;
+        let baseFunction = straightLine;
+        let tileCount = 16;
+
         var canvas = document.getElementById('canvas');
         var ctx = canvas.getContext('2d');
-        tile(ctx, 16, straightLine);
+        tile(ctx, tileCount, baseFunction, directionOffset, numberOfDirections);
       }
 
-      function tile(ctx, tileCount, callback) {
+      function tile(ctx, tileCount, callback, directionOffset, numberOfDirections) {
         let tileWidth = ctx.canvas.width / tileCount;
         let tileHeight = ctx.canvas.height / tileCount;
         for(let dx = 0; dx <= tileCount; dx += 1) {
           for(let dy = 0; dy <= tileCount; dy += 1) {
             let upperLeft = new Point(dx * tileWidth, dy * tileHeight)
             let lowerRight = new Point((dx + 1) * tileWidth, (dy + 1) * tileHeight);
-            let rotation = randomizeDirection(27, 0);
+            let rotation = randomizeDirection(numberOfDirections, directionOffset);
             callback(ctx, upperLeft, lowerRight, rotation);
           }
         }
