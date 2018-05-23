@@ -13,7 +13,9 @@
       }
     </style>
     <script src="point.js"></script>
+    <script src="rotation.js"></script>
     <script>
+
 
       function bodyOnLoad() {
         let directionOffset = 45;
@@ -29,22 +31,14 @@
       function tile(ctx, tileCount, callback, directionOffset, numberOfDirections) {
         let tileWidth = ctx.canvas.width / tileCount;
         let tileHeight = ctx.canvas.height / tileCount;
+        let rotation = new Rotation(numberOfDirections, directionOffset);
         for(let dx = 0; dx <= tileCount; dx += 1) {
           for(let dy = 0; dy <= tileCount; dy += 1) {
             let upperLeft = new Point(dx * tileWidth, dy * tileHeight)
             let lowerRight = new Point((dx + 1) * tileWidth, (dy + 1) * tileHeight);
-            let rotation = randomizeDirection(numberOfDirections, directionOffset);
-            callback(ctx, upperLeft, lowerRight, rotation);
+            callback(ctx, upperLeft, lowerRight, rotation.random());
           }
         }
-      }
-
-      function randomizeDirection(numberOfDirections, offset) {
-        let stepThreshold =  1/numberOfDirections;
-        let value = Math.random();
-        let stepsToTake = Math.floor(value/stepThreshold);
-        let stepSize = 180/numberOfDirections;
-        return stepsToTake * stepSize + offset;
       }
 
       function center(upperLeft, lowerRight) {
